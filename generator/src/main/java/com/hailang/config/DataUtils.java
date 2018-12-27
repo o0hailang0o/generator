@@ -6,13 +6,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DataUtils {
 
-    public static List<FieldEntity> getAllField() throws Exception{
+    //oracle
+    public static List<FieldEntity> getAllField() throws Exception {
         List<FieldEntity> list = new ArrayList<FieldEntity>();
         final String SQL = "select  a.column_name,a.data_type,b.comments " +
                 "from all_tab_columns a " +
@@ -22,8 +21,8 @@ public class DataUtils {
         Connection conn = JdbcUtils.getConnection();
         try {
             PreparedStatement pst = conn.prepareStatement(SQL);
-            pst.setString(1 ,PropertiesUtils.get("tableName"));
-          //  pst.setInt(2, e.getAgeend());
+            pst.setString(1, PropertiesUtils.get("tableName"));
+            //  pst.setInt(2, e.getAgeend());
             ResultSet rSet = pst.executeQuery();
             while (rSet.next()) {
                 FieldEntity fieldEntity = new FieldEntity();
@@ -42,7 +41,7 @@ public class DataUtils {
         return list;
     }
 
-    public static List<FieldEntity> getPrimary()throws Exception{
+    public static List<FieldEntity> getPrimary() throws Exception {
         List<FieldEntity> list = new ArrayList<FieldEntity>();
         String SQL = "select  col.constraint_name,col.table_name,column_name\n" +
                 "from all_constraints con,all_cons_columns col\n" +
@@ -52,7 +51,7 @@ public class DataUtils {
         Connection conn = JdbcUtils.getConnection();
         try {
             PreparedStatement pst = conn.prepareStatement(SQL);
-            pst.setString(1 ,PropertiesUtils.get("tableName"));
+            pst.setString(1, PropertiesUtils.get("tableName"));
             //  pst.setInt(2, e.getAgeend());
             ResultSet rSet = pst.executeQuery();
             while (rSet.next()) {
@@ -70,8 +69,70 @@ public class DataUtils {
         return list;
     }
 
+    //mysql
+    public static List<FieldEntity> getAllFieldMysql() throws Exception {
+        List<FieldEntity> list = new ArrayList<FieldEntity>();
+        final String SQL = "SELECT\n" +
+                "    COLUMN_NAME AS column_name,\n" +
+                "    COLUMN_COMMENT AS comments,\n" +
+                "    DATA_TYPE AS data_type\n" +
+                "FROM\n" +
+                "    information_schema.`COLUMNS`\n" +
+                "WHERE\n" +
+                "    TABLE_NAME = ? group by column_name,comments,data_type";
+        Connection conn = JdbcUtils.getConnection();
+        try {
+            PreparedStatement pst = conn.prepareStatement(SQL);
+            pst.setString(1, PropertiesUtils.get("tableName"));
+            //  pst.setInt(2, e.getAgeend());
+            ResultSet rSet = pst.executeQuery();
+            while (rSet.next()) {
+                FieldEntity fieldEntity = new FieldEntity();
+                fieldEntity.setDataBaseFieldName(rSet.getString("column_name").toUpperCase());
+                fieldEntity.setComments(rSet.getString("comments"));
+                fieldEntity.setFieldName(BeanHump.underlineToCamel2(rSet.getString("column_name")));
+                fieldEntity.setFieldUpperName(BeanHump.underlineToCamel(rSet.getString("column_name")));
+                fieldEntity.setFieldType(TypeUtils.mysqlType(rSet.getString("data_type")));
+                list.add(fieldEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+        }
+        return list;
+    }
+
+    public static List<FieldEntity> getPrimaryMysql() throws Exception {
+        List<FieldEntity> list = new ArrayList<FieldEntity>();
+        String SQL = "SELECT a.column_name AS column_name , b.DATA_TYPE AS data_type\n" +
+                "  FROM INFORMATION_SCHEMA.`KEY_COLUMN_USAGE` a LEFT JOIN information_schema.`COLUMNS` b ON a.column_name = b.column_name\n" +
+                " WHERE a.table_name = ? \n" +
+                " AND a.constraint_name='PRIMARY'\n" +
+                " GROUP BY a.column_name";
+        Connection conn = JdbcUtils.getConnection();
+        try {
+            PreparedStatement pst = conn.prepareStatement(SQL);
+            pst.setString(1, PropertiesUtils.get("tableName"));
+            //  pst.setInt(2, e.getAgeend());
+            ResultSet rSet = pst.executeQuery();
+            while (rSet.next()) {
+                FieldEntity fieldEntity = new FieldEntity();
+                fieldEntity.setDataBaseFieldName(rSet.getString("column_name"));
+                fieldEntity.setFieldName(BeanHump.underlineToCamel2(rSet.getString("column_name")));
+                fieldEntity.setFieldUpperName(BeanHump.underlineToCamel(rSet.getString("column_name")));
+                list.add(fieldEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+        }
+        return list;
+    }
 
     public static void main(String[] args)throws Exception{
-        System.out.print(DataUtils.getPrimary());
+        System.out.println(getPrimaryMysql ());
     }
 }
+

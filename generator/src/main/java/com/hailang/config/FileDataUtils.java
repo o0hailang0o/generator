@@ -6,17 +6,24 @@ import freemarker.template.Template;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.util.*;
 
 
 public class FileDataUtils {
 
     public static void generatorFile()throws Exception{
+        String base = PropertiesUtils.get("base");
         List<String> configKey = PropertiesUtils.getConfigKey();
-        Map<String,Object> map = new HashMap<>();
-        List<FieldEntity> fieldEntities = DataUtils.getAllField();
-        List<FieldEntity> primaries = DataUtils.getPrimary();
+        Map<String,Object> map = new HashMap<>(16);
+        List<FieldEntity> fieldEntities = new ArrayList<>();
+        List<FieldEntity> primaries = new ArrayList<>();
+        if("oracle".equals(base)){
+            fieldEntities = DataUtils.getAllField();
+            primaries = DataUtils.getPrimary();
+        }else{
+            fieldEntities = DataUtils.getAllFieldMysql();
+            primaries = DataUtils.getPrimaryMysql();
+        }
         List<FieldEntity> fields = new ArrayList<>();
         Boolean isDate = false;
         Boolean isNumber = false;
@@ -48,6 +55,7 @@ public class FileDataUtils {
             Configuration config = new Configuration();
 
             config.setDefaultEncoding("UTF-8");
+            config.setTemplateUpdateDelay(0);
             config.setDirectoryForTemplateLoading(new File(PropertiesUtils.get("filePath")));
 
             Template template = config.getTemplate("ftl/"+key+".ftl");
