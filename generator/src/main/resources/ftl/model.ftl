@@ -1,6 +1,4 @@
 package sca.yabao.data.exchange.model;
-
-
 <#if isDate == true>
 import java.util.Date;
 </#if>
@@ -8,15 +6,17 @@ import java.util.Date;
 import java.math.BigDecimal;
 </#if>
 
+
 public class ${className}{
 
      private static final long serialVersionUID = 1L;
 
 <#list fieldEntities as value>
-
-    private ${value.fieldType} ${value.fieldName};
+    /**
+     * ${value.comments}
+     */
+    private ${value.fieldType} ${value.fieldName}1111;
 </#list>
-
 
 <#list fieldEntities as value>
     public ${value.fieldType} get${value.fieldUpperName}(){
