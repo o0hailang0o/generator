@@ -15,7 +15,7 @@ public class ${className}{
     /**
      * ${value.comments}
      */
-    private ${value.fieldType} ${value.fieldName}1111;
+    private ${value.fieldType} ${value.fieldName};
 </#list>
 
 <#list fieldEntities as value>
