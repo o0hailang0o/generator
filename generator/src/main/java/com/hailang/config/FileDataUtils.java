@@ -107,8 +107,4 @@ public class FileDataUtils {
         return str;
     }
 
-    private static final String dbconfig = "config.properties";
-    private static Properties prop = new Properties();
-
-
 }

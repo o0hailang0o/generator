@@ -1,6 +1,12 @@
-package sca.yabao.data.exchange.model;
+package com.example.demo.model;
 
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.demo.exception.NotNullException;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 <#if isDate == true>
 import java.util.Date;
 </#if>
@@ -8,36 +14,16 @@ import java.util.Date;
 import java.math.BigDecimal;
 </#if>
 
+@Data
+@ApiModel
+@TableName(value = "${tableName}")
 public class ${className}{
 
      private static final long serialVersionUID = 1L;
 
 <#list fieldEntities as value>
-
+    @ApiModelProperty(${value.comments})
     private ${value.fieldType} ${value.fieldName};
 </#list>
-
-
-<#list fieldEntities as value>
-    public ${value.fieldType} get${value.fieldUpperName}(){
-        return ${value.fieldName};
-    }
-
-
-    public void set${value.fieldUpperName} (${value.fieldType} ${value.fieldName}){
-        this.${value.fieldName} = ${value.fieldName};
-    }
-
-
-</#list>
-
-     @Override
-     public String toString(){
-        return "${className}{"+
-<#list fieldEntities as value>
-            "${value.fieldName}='" + ${value.fieldName}+ '\'' +
-</#list>
-        '}';
-    }
 
 }

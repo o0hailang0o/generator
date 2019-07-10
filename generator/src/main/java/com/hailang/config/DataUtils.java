@@ -79,11 +79,12 @@ public class DataUtils {
                 "FROM\n" +
                 "    information_schema.`COLUMNS`\n" +
                 "WHERE\n" +
-                "    TABLE_NAME = ? group by column_name,comments,data_type";
+                "    TABLE_NAME = ? group by column_name,comments,data_type and table_schema = ?";
         Connection conn = JdbcUtils.getConnection();
         try {
             PreparedStatement pst = conn.prepareStatement(SQL);
             pst.setString(1, PropertiesUtils.get("tableName"));
+            pst.setString(2, getDatabaseName());
             //  pst.setInt(2, e.getAgeend());
             ResultSet rSet = pst.executeQuery();
             while (rSet.next()) {
@@ -131,8 +132,15 @@ public class DataUtils {
         return list;
     }
 
-    public static void main(String[] args)throws Exception{
-        System.out.println(getPrimaryMysql ());
+    private static String getDatabaseName(){
+        String url = PropertiesUtils.get("url");
+        return url.substring(url.lastIndexOf("/")+1,url.lastIndexOf("?"));
     }
+
+    public static void main(String[] args){
+        System.out.println(getDatabaseName());
+    }
+
+
 }
 

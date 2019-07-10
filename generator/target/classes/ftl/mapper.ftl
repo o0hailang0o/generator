@@ -32,7 +32,7 @@
                ${tableName}
         WHERE
            <#list primaries as value>
-               ${value.dataBaseFieldName} = ${'#'}${'{'}${classLowerName}.${value.fieldName}${'}'}<#if value_has_next>  and</#if>
+               ${value.dataBaseFieldName} = ${'#'}${'{'}${value.fieldName}${'}'}<#if value_has_next>  and</#if>
            </#list>
     </select>
 </mapper>
