@@ -79,7 +79,7 @@ public class DataUtils {
                 "FROM\n" +
                 "    information_schema.`COLUMNS`\n" +
                 "WHERE\n" +
-                "    TABLE_NAME = ? group by column_name,comments,data_type and table_schema = ?";
+                "    TABLE_NAME = ? and table_schema = ?";
         Connection conn = JdbcUtils.getConnection();
         try {
             PreparedStatement pst = conn.prepareStatement(SQL);
@@ -109,11 +109,11 @@ public class DataUtils {
         String SQL = "SELECT a.column_name AS column_name , b.DATA_TYPE AS data_type FROM( \n" +
                 "SELECT column_name AS column_name \n" +
                 "  FROM INFORMATION_SCHEMA.`KEY_COLUMN_USAGE` a \n" +
-                "   WHERE a.table_name = ？ \n" +
+                "   WHERE a.table_name = ? \n" +
                 " AND a.constraint_name='PRIMARY'\n" +
-                " AND table_schema=？\n" +
+                " AND table_schema=?\n" +
                 " ) a LEFT JOIN \n" +
-                "( SELECT * FROM information_schema.`COLUMNS` WHERE table_name = ？ AND table_schema = ？  ) b\n" +
+                "( SELECT * FROM information_schema.`COLUMNS` WHERE table_name = ? AND table_schema = ?  ) b\n" +
                 "ON a.column_name = b.column_name";
         Connection conn = JdbcUtils.getConnection();
         try {
