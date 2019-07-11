@@ -110,7 +110,7 @@ public class DataUtils {
                 "  FROM INFORMATION_SCHEMA.`KEY_COLUMN_USAGE` a LEFT JOIN information_schema.`COLUMNS` b ON a.column_name = b.column_name\n" +
                 " WHERE a.table_name = ? \n" +
                 " AND a.constraint_name='PRIMARY'\n" +
-                " GROUP BY a.column_name";.
+                " GROUP BY a.column_name";
         Connection conn = JdbcUtils.getConnection();
         try {
             PreparedStatement pst = conn.prepareStatement(SQL);
