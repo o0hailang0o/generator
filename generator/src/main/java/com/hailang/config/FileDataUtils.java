@@ -66,7 +66,7 @@ public class FileDataUtils {
 
     private static Boolean containsPrimary(FieldEntity fieldEntity,List<FieldEntity> primaries){
         for(FieldEntity fe : primaries){
-            if(fe.getDataBaseFieldName().equals(fieldEntity.getDataBaseFieldName())){
+            if(fe.getDataBaseFieldName().toLowerCase().equals(fieldEntity.getDataBaseFieldName().toLowerCase())){
                return true;
             }
         }

@@ -106,7 +106,7 @@ public class DataUtils {
 
     public static List<FieldEntity> getPrimaryMysql() throws Exception {
         List<FieldEntity> list = new ArrayList<FieldEntity>();
-        String SQL = "SELECT a.column_name AS column_name , b.DATA_TYPE AS data_type FROM( \n" +
+        String SQL = "SELECT a.column_name AS column_name , b.DATA_TYPE AS data_type ,b.COLUMN_COMMENT AS comments FROM( \n" +
                 "SELECT column_name AS column_name \n" +
                 "  FROM INFORMATION_SCHEMA.`KEY_COLUMN_USAGE` a \n" +
                 "   WHERE a.table_name = ? \n" +
@@ -129,6 +129,8 @@ public class DataUtils {
                 fieldEntity.setDataBaseFieldName(rSet.getString("column_name"));
                 fieldEntity.setFieldName(BeanHump.underlineToCamel2(rSet.getString("column_name")));
                 fieldEntity.setFieldUpperName(BeanHump.underlineToCamel(rSet.getString("column_name")));
+                fieldEntity.setFieldType(TypeUtils.mysqlType(rSet.getString("data_type")));
+                fieldEntity.setComments(rSet.getString("comments"));
                 list.add(fieldEntity);
             }
         } catch (Exception e) {
