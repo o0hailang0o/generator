@@ -106,15 +106,22 @@ public class DataUtils {
 
     public static List<FieldEntity> getPrimaryMysql() throws Exception {
         List<FieldEntity> list = new ArrayList<FieldEntity>();
-        String SQL = "SELECT a.column_name AS column_name , b.DATA_TYPE AS data_type\n" +
-                "  FROM INFORMATION_SCHEMA.`KEY_COLUMN_USAGE` a LEFT JOIN information_schema.`COLUMNS` b ON a.column_name = b.column_name\n" +
-                " WHERE a.table_name = ? \n" +
+        String SQL = "SELECT a.column_name AS column_name , b.DATA_TYPE AS data_type FROM( \n" +
+                "SELECT column_name AS column_name \n" +
+                "  FROM INFORMATION_SCHEMA.`KEY_COLUMN_USAGE` a \n" +
+                "   WHERE a.table_name = ？ \n" +
                 " AND a.constraint_name='PRIMARY'\n" +
-                " GROUP BY a.column_name";
+                " AND table_schema=？\n" +
+                " ) a LEFT JOIN \n" +
+                "( SELECT * FROM information_schema.`COLUMNS` WHERE table_name = ？ AND table_schema = ？  ) b\n" +
+                "ON a.column_name = b.column_name";
         Connection conn = JdbcUtils.getConnection();
         try {
             PreparedStatement pst = conn.prepareStatement(SQL);
             pst.setString(1, PropertiesUtils.get("tableName"));
+            pst.setString(2, getDatabaseName());
+            pst.setString(3,PropertiesUtils.get("tableName"));
+            pst.setString(4, getDatabaseName());
             //  pst.setInt(2, e.getAgeend());
             ResultSet rSet = pst.executeQuery();
             while (rSet.next()) {
