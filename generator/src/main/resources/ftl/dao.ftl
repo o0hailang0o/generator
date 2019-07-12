@@ -1,13 +1,12 @@
-package sca.yabao.data.exchange.dao;
+package com.example.demo.mapper;
 
-import sca.yabao.data.exchange.model.${className};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.demo.model.${className};
+import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
+@Mapper
+public interface ${className}Mapper extends BaseMapper<${className}> {
 
-public interface ${className}Dao {
-
-    List<${className}> list${className}();
-
-    ${className} findBy${className}Primary(${className} ${classLowerName});
-
+    void delete${className}ById(Long id);
+    
 }

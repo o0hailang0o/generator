@@ -1,12 +1,38 @@
-package com.demo.service;
+package com.example.demo.service;
 
-import com.demo.model.${className};
+import com.example.demo.mapper.${className}Mapper;
+import com.example.demo.model.${className};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface ${className}Service {
+@Service
+public class ${className}Service {
 
-    List<${className}> list${className}();
+@Autowired
+private ${className}Mapper ${classLowerName}Mapper;
 
-    ${className} select${className}Primary(${className} ${classLowerName});
+    public List<${className}> get${className}List() {
+         return ${classLowerName}Mapper.selectList(null);
+    }
+
+    public void add${className}(${className} ${classLowerName}) {
+        int result = ${classLowerName}Mapper.insert(${classLowerName});
+        if(result<1){
+            throw new RuntimeException("添加失败");
+         }
+    }
+
+    public void update${className}(${className} ${classLowerName}) {
+        ${classLowerName}Mapper.updateById(${classLowerName});
+    }
+
+    public ${className} find${className}ById(Long id) {
+         return ${classLowerName}Mapper.selectById(id);
+    }
+
+    public void delete${className}ById(Long id) {
+         ${classLowerName}Mapper.delete${className}ById(id);
+    }
 }
